@@ -10,7 +10,7 @@ import json
 ## -- Utility functions -- ##
 def compute_cost(tokens, engine):
     
-    model_prices = {"text-davinci-002": 0.02, 
+    model_prices = {"text-davinci-003": 0.02, 
                     "gpt-3.5-turbo": 0.002, 
                     "gpt-4": 0.03}
     model_price = model_prices[engine]
