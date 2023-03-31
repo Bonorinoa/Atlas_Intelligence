@@ -87,7 +87,7 @@ with st.sidebar:
     
     st.write("## Model Selection")
     st.session_state.model = st.selectbox("Engine", 
-                                           ["text-davinci-003", "gpt-4"])
+                                           ["text-davinci-003", "gpt-3.5-turbo", "gpt-4"])
 
     st.write("### Model Prices")
     st.markdown("- (GPT-3) text-davinci-003: $0.02 per 1000 tokens")
