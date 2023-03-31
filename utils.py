@@ -8,11 +8,23 @@ import json
 # TODO: Add evaluation function to evaluate model performance. (runtime, hallucinations, etc.)
 
 ## -- Utility functions -- ##
-def atlas_analysis_gpt4(api_key: str, 
-                            data: pd.DataFrame, 
-                            n: int, 
-                            max_tokens: int, 
-                            temperature: float) -> str:
+def compute_cost(tokens, engine):
+    
+    model_prices = {"text-davinci-002": 0.02, 
+                    "gpt-3.5-turbo": 0.002, 
+                    "gpt-4": 0.03}
+    model_price = model_prices[engine]
+    
+    cost = (tokens / 1000) * model_price
+
+    return cost
+
+def atlas_analysis_chatGPT(api_key: str, 
+                           model: str,
+                           data: pd.DataFrame, 
+                           n: int, 
+                           max_tokens: int, 
+                           temperature: float) -> str:
     
         '''
         Prompt function for the atlas_analysis function with the GPT-4 model.
@@ -52,7 +64,7 @@ def atlas_analysis_gpt4(api_key: str,
          
         # this will change to ChatCompletion endpoint when their apir errors are fixed   
         try:
-            completion = openai.ChatCompletion.create(model="gpt-4",
+            completion = openai.ChatCompletion.create(model=model,
                                                   messages=[{"role": "system", "content":sys_prompt}, 
                                                             {"role": "user", "content":prompt}],
                                                   n=n,
@@ -60,17 +72,20 @@ def atlas_analysis_gpt4(api_key: str,
                                                   temperature=temperature)
             
             insight = completion.choices[0].message.content
+            tokens_used = completion.usage.total_tokens
+            query_cost = compute_cost(tokens_used, model)
             
         except openai.error.OpenAIError as e:
             raise ValueError(f"An error occurred while calling the OpenAI API: {e}")
                 
-        return insight
+        return (insight, tokens_used, query_cost)
     
-def atlas_analysis_davinci(api_key: str, 
-                    data: pd.DataFrame, 
-                    n: int, 
-                    max_tokens: int, 
-                    temperature: float) -> str:
+def atlas_analysis_davinci(api_key: str,
+                           model: str, 
+                           data: pd.DataFrame, 
+                           n: int, 
+                           max_tokens: int, 
+                           temperature: float) -> str:
     
         '''
         Test prompt for the atlas_analysis function
@@ -108,7 +123,7 @@ def atlas_analysis_davinci(api_key: str,
          
         # this will change to ChatCompletion endpoint when their apir errors are fixed   
         try:
-            completion = openai.Completion.create(engine="text-davinci-003",
+            completion = openai.Completion.create(engine=model,
                                                 prompt= sys_prompt + prompt,
                                                 temperature=temperature,
                                                 n=n,
@@ -116,10 +131,12 @@ def atlas_analysis_davinci(api_key: str,
             
             
             insight = completion.choices[0].text
+            tokens_used = completion.usage.total_tokens
+            query_cost = compute_cost(tokens_used, model)
             
         except openai.error.OpenAIError as e:
             raise ValueError(f"An error occurred while calling the OpenAI API: {e}")
                 
-        return insight
+        return (insight, tokens_used, query_cost)
     
 ## -- End of utility functions -- ##
