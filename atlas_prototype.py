@@ -7,7 +7,7 @@ from utils import atlas_analysis_davinci, atlas_analysis_chatGPT
 
 # Define session state variables
 if "max_tokens" not in st.session_state:
-    st.session_state.max_tokens = 256
+    st.session_state.max_tokens = 550
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.5
 if "model" not in st.session_state:
@@ -45,29 +45,6 @@ survey_results = pd.concat([empty_survey, questions_df, answers_df], axis=1)
 
 st.sidebar.title("Smart Surveys Demo")
 
-# Add a sidebar for controlling model parameters
-with st.sidebar:
-    st.write("## Model Parameters")
-    st.session_state.max_tokens = st.slider("Max Tokens", min_value=32, max_value=1000, value=st.session_state.max_tokens)
-    st.session_state.temperature = st.slider("Temperature", min_value=0.1, max_value=1.0, value=st.session_state.temperature, step=0.05)
-    
-    st.write("## Model Selection")
-    st.session_state.engine = st.selectbox("Engine", 
-                                           ["text-davinci-002", "gpt-3.5-turbo", "gpt-4"])
-
-    st.write("### Model Prices")
-    st.markdown("- (GPT-3) text-davinci-002: $0.02 per 1000 tokens")
-    st.markdown("- (chatGPT-3.5) gpt-3.5-turbo: $0.002 per 1000 tokens")
-    st.markdown("- (chatGPT-4) gpt-4: $0.03 per 1000 tokens")
-
-    st.write("## Session Stats")
-
-    st.write("## Tokens Used So Far...")
-    st.write(st.session_state.tokens_used)
-    
-    st.write("## Cost So Far...")
-    st.info(f"${st.session_state.cost:.5f}")
-
 st.sidebar.subheader("Credentials")
 open_api_key = st.sidebar.text_input("OpenAI API key")
 
@@ -97,11 +74,33 @@ st.sidebar.subheader("Question 6")
 st.sidebar.write(f"{questions[5]}")
 response_6 = st.sidebar.text_input("Response 6")
 
-st.sidebar.subheader("Model")
-model = st.sidebar.selectbox("Select model", 
-                             ["GPT-3", "GPT-4"])
+#st.sidebar.subheader("Model")
+#model = st.sidebar.selectbox("Select model", 
+#                             ["Davinci", "chatGPT"])
 
 
+# Add a sidebar for controlling model parameters
+with st.sidebar:
+    st.write("## Model Parameters")
+    st.session_state.max_tokens = st.slider("Max Tokens", min_value=32, max_value=1000, value=st.session_state.max_tokens)
+    st.session_state.temperature = st.slider("Temperature", min_value=0.1, max_value=1.0, value=st.session_state.temperature, step=0.05)
+    
+    st.write("## Model Selection")
+    st.session_state.model = st.selectbox("Engine", 
+                                           ["text-davinci-003", "gpt-4"])
+
+    st.write("### Model Prices")
+    st.markdown("- (GPT-3) text-davinci-003: $0.02 per 1000 tokens")
+    st.markdown("- (chatGPT-3.5) gpt-3.5-turbo: $0.002 per 1000 tokens")
+    st.markdown("- (chatGPT-4) gpt-4: $0.03 per 1000 tokens")
+
+    st.write("## Session Stats")
+
+    st.write("## Tokens Used So Far...")
+    st.write(st.session_state.tokens_used)
+    
+    st.write("## Cost So Far...")
+    st.info(f"${st.session_state.cost:.5f}")
 
 if response_1 and response_2 and response_3 and response_4 and response_5 and response_6:
     # generate insights
@@ -112,7 +111,7 @@ if response_1 and response_2 and response_3 and response_4 and response_5 and re
         atlas_test_df = pd.DataFrame(survey_results)
         #print(atlas_test_df)
 
-        if model == "text-davinci-003":
+        if st.session_state.model == "text-davinci-003":
             
             insights, tokens_used, query_cost = atlas_analysis_davinci(api_key=open_api_key,
                                               model=st.session_state.model,
@@ -132,7 +131,7 @@ if response_1 and response_2 and response_3 and response_4 and response_5 and re
 
             st.balloons()
             
-        elif model == "gpt-4":
+        elif st.session_state.model == "gpt-3.5-turbo":
             
             insights, tokens_used, query_cost = atlas_analysis_chatGPT(api_key=open_api_key,
                                                             model=st.session_state.model,
@@ -151,6 +150,26 @@ if response_1 and response_2 and response_3 and response_4 and response_5 and re
             st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
 
             st.balloons()
+            
+        elif st.session_state.model == "gpt-4":
+            
+            insights, tokens_used, query_cost = atlas_analysis_chatGPT(api_key=open_api_key,
+                                                            model=st.session_state.model,
+                                                            data=atlas_test_df,
+                                                            n=1,
+                                                            max_tokens=st.session_state.max_tokens,
+                                                            temperature=st.session_state.temperature)
+
+            st.session_state.tokens_used += tokens_used
+            st.session_state.cost += query_cost
+            
+            st.write("## Generated Insights")
+            st.write(f"\n {insights} \n")
+            
+            st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
+            st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
+
+            st.balloons()            
 
 else:
     st.warning("Please enter your responses to the questions.")
