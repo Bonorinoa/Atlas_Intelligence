@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from utils import atlas_analysis_davinci, atlas_analysis_gpt4
+from utils import atlas_analysis_davinci, atlas_analysis_chatGPT
 
 # TODO: Move prototype's frontend to Javascript (Flask + React?).
 # TODO: Add more text mining and NLP features. (finish smart_surveys package and import it here)
@@ -11,7 +11,7 @@ if "max_tokens" not in st.session_state:
 if "temperature" not in st.session_state:
     st.session_state.temperature = 0.5
 if "model" not in st.session_state:
-    st.session_state.model = "text-davinci-002"
+    st.session_state.model = ""
 if "tokens_used" not in st.session_state:
     st.session_state.tokens_used = 0
 if "cost" not in st.session_state:
@@ -112,7 +112,7 @@ if response_1 and response_2 and response_3 and response_4 and response_5 and re
         atlas_test_df = pd.DataFrame(survey_results)
         #print(atlas_test_df)
 
-        if model == "GPT-3":
+        if model == "text-davinci-003":
             
             insights, tokens_used, query_cost = atlas_analysis_davinci(api_key=open_api_key,
                                               model=st.session_state.model,
@@ -132,13 +132,14 @@ if response_1 and response_2 and response_3 and response_4 and response_5 and re
 
             st.balloons()
             
-        elif model == "GPT-4":
+        elif model == "gpt-4":
             
-            insights, tokens_used, query_cost = atlas_analysis_gpt4(api_key=open_api_key,
+            insights, tokens_used, query_cost = atlas_analysis_chatGPT(api_key=open_api_key,
+                                                            model=st.session_state.model,
                                                             data=atlas_test_df,
                                                             n=1,
-                                                            max_tokens=650,
-                                                            temperature=0.75)
+                                                            max_tokens=st.session_state.max_tokens,
+                                                            temperature=st.session_state.temperature)
 
             st.session_state.tokens_used += tokens_used
             st.session_state.cost += query_cost
