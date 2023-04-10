@@ -161,18 +161,30 @@ def generate_goals(api_key: str,
     sys_prompt = "You are a well-being expert. Your task is to identify and recommend goals that will help the surveyed object improve his well-being given the survey insights report. \n"
     prompt = f"Given the following insights [{insights}], provide three suggested goals for the surveyed object that will maximize his net benefit for the effort required to improve along the dimensions that need the most improvement."
     
-    try:
-        completion = openai.Completion.create(engine=model,
-                                         prompt=sys_prompt + prompt,
-                                         temperature=0.7,
-                                         max_tokens=500)
+    if model == "text-davinci-003":
+        try:
+            completion = openai.Completion.create(engine=model,
+                                            prompt=sys_prompt + prompt,
+                                            temperature=0.7,
+                                            max_tokens=500)
+            
+            goals = completion.choices[0].text
+            tokens_used = completion.usage.total_tokens
+            query_cost = compute_cost(tokens_used, model)
+            
+        except openai.error.OpenAIError as e:
+            raise ValueError(f"An error occurred while calling the OpenAI API: {e}")
         
-        goals = completion.choices[0].text
+    else:
+        completion = openai.ChatCompletion.create(model=model,
+                                                  messages=[{"role": "system", "content":sys_prompt}, 
+                                                            {"role": "user", "content":prompt}],
+                                                  temperature=0.7,
+                                                  max_tokens=500)
+        
+        goals = completion.choices[0].message.content
         tokens_used = completion.usage.total_tokens
         query_cost = compute_cost(tokens_used, model)
-        
-    except openai.error.OpenAIError as e:
-        raise ValueError(f"An error occurred while calling the OpenAI API: {e}")
     
     return (goals, tokens_used, query_cost)
 ## -- End of utility functions -- ##
