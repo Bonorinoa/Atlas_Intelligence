@@ -22,22 +22,110 @@ st.write("A description of the prototype and Atlas intelligence goes here.")
 
 empty_survey = pd.DataFrame()
 
-questions = ["Please imagine a ladder with steps numbered from zero at the bottom to ten at the top. The top of the ladder represents the best possible life for you, and the bottom of the ladder represents the worst possible life for you. On which step of the ladder would you say you personally feel you stand at this time?  (1 = Strongly Disagree, 10 = Strongly Agree)",
-             "On which step do you think you will stand about five years from now?  (1 = Strongly Disagree, 10 = Strongly Agree)",
-             "Please describe, in a few sentences, your physical health and workout routine.",
-             "Briefly, what do you perceive a meaningful or purposeful life to be?",
-             "Agree or Disagree: I am aware of what brings me purpose and I am motivated to pursue it. (1 = Strongly Disagree, 10 = Strongly Agree)",
-             "In a few sentences, think of a dear friend or relative and write how you would improve their day."]
+questions = [
+"I experience feelings of joy in a typical day (1-7)",
+"Overall, I feel enthusiastic about my day to day life (1-7)",
+"Please spend some time writing down the types of positive emotions you typically experience on a given day:",
+"Describe the experiences that typically bring up these positive emotions for you:",
+"Describe the experiences that typically block you from experiencing these emotions:",
+"I typically feel fully absorbed in what I am doing (1-7)",
+"Please spend some time describing examples of the tasks and experiences that you feel most absorbed with:",
+"Please spend some time describing the extent to which you feel fully absorbed in a task or experience during a typical day:",
+"Please spend some time describing what the experience of being fully absorbed in a task or experience feels like:",
+"I am generally satisfied with the quality of relationships in my life (1-7)",
+"Take a brief moment to think about your relationships with other people in your life, such as family, friends, significant others, colleagues at work or your broader social network.",
+"Please spend spend some time writing  down how you feel about these relationships. You can choose to write about all the relationships or focus on specific areas of your social relationships:",
+"In what ways do your social relationships add to the quality of your life:",
+"In what ways do your social relationships detract from the quality of your life:",
+"Take a brief moment to think about what is most important to you in life and why. ",
+"What gives your life meaning?",
+"What are you doing currently in life that is not meaningful?",
+"Please spend some time writing about how meaningful you feel your life is:",
+"Please spend some time writing about the purposes you feel your life serves:",
+"My life is meaningful (1-7)",
+"My life serves a purpose (1-7)",
+"My life matters to the people I care about (1-7)",
+"I typically accomplish what I set out to do (1-7)",
+"I am generally satisfied with what I have accomplished in life (1-7)",
+"Please spend some time writing  down things that you’ve accomplished. These do not need to be major accomplishments or anything that you’re especially proud of. They can be if you want, but if you can’t think of any that’s okay, just think of things that you’ve set out to do and successfully accomplished, no matter how big or how small they may seem to be:",
+"Please spend at least two minutes writing down the how you feel about these accomplishments:",
+"I typically feel physically healthy (1-7)",
+"I feel in control of my physical health (1-7)",
+"Please spend some time writing  down what physical health means to you:",
+"Please spend some time describing how physically healthy you are",
+"What do you do that contributes to your physical health",
+"What do you do that impairs your physical health",
+"What things that are out of your control do you feel impair your physical health",
+"I believe I can improve my skills by working hard (1-7)",
+"When I fail to improve at something, I try a new approach (1-7)",
+"I can secure a worthwhile future by working hard (1-7)",
+"Please spend at least two minutes writing down things you wish you were better at",
+"When thinking of these things, do you typically judge your skill level against other people or against yourself in the past",
+"I typically have access to natural light during the daytime (1-7)",
+"I can conveniently access nature in my daily life (1-7)",
+"I typically spend time in physical settings that are physically comfortable (1-7)",
+"What types of physical environments do you most enjoy spending time in?",
+"When are you able to spend time in these types of environments?",
+"What stops you from spending more time in these types of environments?",
+"I am comfortable with my current level of income (1-7)",
+"I have enough savings to get through a financial emergency (1-7)",
+"How would you describe your current financial status?",
+"How do you feel about your current financial status?",
+"Do you typically worry about money?"
+]
 
 questions_df = pd.DataFrame(questions, columns=['question'])
 #print(questions)
 
-answers = [6, 
-           8,
-           "I feel in good physical health and try to maintain a 6-day workout routine. I mix cardio and strength training. I also try to eat a healthy diet and get plenty of sleep. Lately I have been failing on this by relapsing to nicotine, which has affected my sleep, due to a period of stress.",
-           "For me, purpose is all about nourishing curiosity. My curiosity drives me towards new, ever more exciting, places and challenges. I perceive meaning or purpose to be exactly this quest for new adventures, both physical and intellectual.",
-           7,
-           "My parents, specially my mom, loves when I call and share what I am up to at school or what new crazy adventures im planning. So, I try to always make at least a litte bit of time every day to call them."]
+answers = [
+4, # I experience feelings of joy in a typical day (1-7)
+5, # Overall, I feel enthusiastic about my day to day life (1-7)
+"I typically experience happiness, contentment, and gratitude on a given day.", # Please spend some time writing down the types of positive emotions you typically experience on a given day:
+"Spending time with loved ones, achieving a goal, and doing things I enjoy typically bring up positive emotions for me.", # Describe the experiences that typically bring up these positive emotions for you:
+"Stressful situations, conflicts with others, and feeling overwhelmed typically block me from experiencing positive emotions.", # Describe the experiences that typically block you from experiencing these emotions:
+6, # I typically feel fully absorbed in what I am doing (1-7)
+"Writing, reading, and spending time outdoors are tasks and experiences that I feel most absorbed with.", # Please spend some time describing examples of the tasks and experiences that you feel most absorbed with:
+"I feel fully absorbed in tasks or experiences for a few hours each day.", # Please spend some time describing the extent to which you feel fully absorbed in a task or experience during a typical day:
+"Being fully absorbed in a task or experience feels like time passing quickly and feeling completely focused on the present moment.", # Please spend some time describing what the experience of being fully absorbed in a task or experience feels like:
+6, # I am generally satisfied with the quality of relationships in my life (1-7)
+"My relationships with family and friends are strong and positive, but I could improve my relationships with colleagues at work.", # Please spend spend some time writing down how you feel about these relationships. You can choose to write about all the relationships or focus on specific areas of your social relationships:
+"My social relationships add to the quality of my life by providing support, love, and companionship.", # In what ways do your social relationships add to the quality of your life:
+"My social relationships detract from the quality of my life when conflicts arise or when I feel overwhelmed by too many social obligations.", # In what ways do your social relationships detract from the quality of your life:
+"What gives my life meaning is helping others, pursuing my passions, and making a positive impact on the world.", # What gives your life meaning?
+"Currently, I feel like my job is not meaningful and I am searching for ways to find more purpose in my career.", # What are you doing currently in life that is not meaningful?
+"I feel that my life is moderately meaningful, but there is room for improvement.", # Please spend some time writing about how meaningful you feel your life is:
+"The purposes I feel my life serves are to help others, make a positive impact, and find joy in everyday experiences.", # Please spend some time writing about the purposes you feel your life serves:
+5, # My life is meaningful (1-7)
+6, # My life serves a purpose (1-7)
+6, # My life matters to the people I care about (1-7)
+6, # I typically accomplish what I set out to do (1-7)
+4, # I am generally satisfied with what I have accomplished in life (1-7)
+"Graduating college, learning to cook, and traveling to new places are things that I have accomplished.", # Please spend some time writing down things that you’ve accomplished. These do not need to be major accomplishments or anything that you’re especially proud of. They can be if you want, but if you can’t think of any that’s okay, just think of things that you’ve set out to do and successfully accomplished, no matter how big or how small they may seem to be:
+"I feel proud of my accomplishments and they give me a sense of satisfaction.", # Please spend at least two minutes writing down the how you feel about these accomplishments:
+7, # I typically feel physically healthy (1-7)
+6, # I feel in control of my physical health (1-7)
+"To me, physical health means feeling energized, strong, and free from illness or pain.", # Please spend some time writing down what physical health means to you:
+"I am physically healthy and active, I exercise regularly, and eat a healthy diet.", # Please spend some time describing how physically healthy you are
+"I exercise, eat healthy, and get enough sleep to contribute to my physical health.", # What do you do that contributes to your physical health
+"Stress and occasional indulgences impair my physical health.", # What do you do that impairs your physical health
+"Environmental factors such as pollution and allergens are out of my control and impair my physical health.", # What things that are out of your control do you feel impair your physical health
+6, # I believe I can improve my skills by working hard (1-7)
+7, # When I fail to improve at something, I try a new approach (1-7)
+7, # I can secure a worthwhile future by working hard (1-7)
+"I wish I were better at public speaking, cooking, and playing an instrument.", # Please spend at least two minutes writing down things you wish you were better at
+"When thinking of these things, I typically judge my skill level against myself in the past and set goals to improve.", # When thinking of these things, do you typically judge your skill level against other people or against yourself in the past
+7, # I typically have access to natural light during the daytime (1-7)
+6, # I can conveniently access nature in my daily life (1-7)
+7, # I typically spend time in physical settings that are physically comfortable (1-7)
+"I most enjoy spending time in nature, cozy cafes, and quiet spaces.", # What types of physical environments do you most enjoy spending time in?
+"I am able to spend time in these types of environments on weekends and during vacations.", # When are you able to spend time in these types of environments?
+"Work obligations and city living often stop me from spending more time in these types of environments.", # What stops you from spending more time in these types of environments?
+5, # I am comfortable with my current level of income (1-7)
+4, # I have enough savings to get through a financial emergency (1-7)
+"My current financial status is stable but I could improve my income and savings.", # How would you describe your current financial status?
+"I feel content with my current financial status but also worry about saving for the future.", # How do you feel about your current financial status?
+"I worry about money occasionally but try to focus on being financially responsible and planning for the future.", # Do you typically worry about money?
+]
 
 answers_df = pd.DataFrame(answers, columns=['response'])
 
@@ -47,7 +135,7 @@ st.sidebar.title("Smart Surveys Demo")
 
 st.sidebar.subheader("Credentials")
 open_api_key = st.sidebar.text_input("OpenAI API key")
-
+""" 
 st.sidebar.subheader("Questions")
 # question 1
 st.sidebar.subheader("Question 1")
@@ -72,7 +160,7 @@ response_5 = st.sidebar.text_input("Response 5")
 
 st.sidebar.subheader("Question 6")
 st.sidebar.write(f"{questions[5]}")
-response_6 = st.sidebar.text_input("Response 6")
+response_6 = st.sidebar.text_input("Response 6") """
 
 #st.sidebar.subheader("Model")
 #model = st.sidebar.selectbox("Select model", 
@@ -102,7 +190,7 @@ with st.sidebar:
     st.write("## Cost So Far...")
     st.info(f"${st.session_state.cost:.5f}")
 
-if response_1 and response_2 and response_3 and response_4 and response_5 and response_6:
+if len(survey_results) > 5:
     # generate insights
     if st.button("Generate Insights"):
         #st.write("Generating insights...")
