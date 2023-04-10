@@ -139,4 +139,40 @@ def atlas_analysis_davinci(api_key: str,
                 
         return (insight, tokens_used, query_cost)
     
+    
+def generate_goals(api_key: str,
+                   model: str,
+                   insights: str):
+    '''
+    Function to generate suggested goals given insights generated
+    api_key: OpenAI API key
+    model: model to use for generation
+    insights: insights generated from the atlas_analysis_x function
+    '''
+    
+    if not isinstance(api_key, str):
+        raise TypeError(f"Expected a string but got {type(api_key)}")
+    
+    if not api_key:
+        raise ValueError("Please provide an API key")
+    
+    openai.api_key = api_key
+    
+    sys_prompt = "You are a well-being expert. Your task is to identify and recommend goals that will help the surveyed object improve his well-being given the survey insights report. \n"
+    prompt = f"Given the following insights [{insights}], provide three suggested goals for the surveyed object that will maximize his net benefit for the effort required to improve along the dimensions that need the most improvement."
+    
+    try:
+        completion = openai.Completion.create(engine=model,
+                                         prompt=sys_prompt + prompt,
+                                         temperature=0.7,
+                                         max_tokens=500)
+        
+        goals = completion.choices[0].text
+        tokens_used = completion.usage.total_tokens
+        query_cost = compute_cost(tokens_used, model)
+        
+    except openai.error.OpenAIError as e:
+        raise ValueError(f"An error occurred while calling the OpenAI API: {e}")
+    
+    return (goals, tokens_used, query_cost)
 ## -- End of utility functions -- ##

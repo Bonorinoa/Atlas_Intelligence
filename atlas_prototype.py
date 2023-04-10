@@ -1,15 +1,15 @@
 import pandas as pd
 import streamlit as st
-from utils import atlas_analysis_davinci, atlas_analysis_chatGPT
+from utils import atlas_analysis_davinci, atlas_analysis_chatGPT, generate_goals
 
 # TODO: Move prototype's frontend to Javascript (Flask + React?).
 # TODO: Add more text mining and NLP features. (finish smart_surveys package and import it here)
 
 # Define session state variables
 if "max_tokens" not in st.session_state:
-    st.session_state.max_tokens = 550
+    st.session_state.max_tokens = 650
 if "temperature" not in st.session_state:
-    st.session_state.temperature = 0.5
+    st.session_state.temperature = 0.65
 if "model" not in st.session_state:
     st.session_state.model = ""
 if "tokens_used" not in st.session_state:
@@ -135,36 +135,6 @@ st.sidebar.title("Smart Surveys Demo")
 
 st.sidebar.subheader("Credentials")
 open_api_key = st.sidebar.text_input("OpenAI API key")
-""" 
-st.sidebar.subheader("Questions")
-# question 1
-st.sidebar.subheader("Question 1")
-st.sidebar.write(f"{questions[0]}")
-response_1 = st.sidebar.text_input("Response 1")
-
-st.sidebar.subheader("Question 2")
-st.sidebar.write(f"{questions[1]}")
-response_2 = st.sidebar.text_input("Response 2")
-
-st.sidebar.subheader("Question 3")
-st.sidebar.write(f"{questions[2]}")
-response_3 = st.sidebar.text_input("Response 3")
-
-st.sidebar.subheader("Question 4")
-st.sidebar.write(f"{questions[3]}")
-response_4 = st.sidebar.text_input("Response 4")
-
-st.sidebar.subheader("Question 5")
-st.sidebar.write(f"{questions[4]}")
-response_5 = st.sidebar.text_input("Response 5")
-
-st.sidebar.subheader("Question 6")
-st.sidebar.write(f"{questions[5]}")
-response_6 = st.sidebar.text_input("Response 6") """
-
-#st.sidebar.subheader("Model")
-#model = st.sidebar.selectbox("Select model", 
-#                             ["Davinci", "chatGPT"])
 
 
 # Add a sidebar for controlling model parameters
@@ -219,6 +189,22 @@ if len(survey_results) > 5:
 
             st.balloons()
             
+            if st.button("Suggest goals"):
+                st.spinner("Generating goals...")
+                
+                goals, tokens_used, query_cost = generate_goals(api_key=open_api_key,
+                                                                model=st.session_state.model,
+                                                                insights=insights)
+                
+                st.session_state.tokens_used += tokens_used
+                st.session_state.cost += query_cost
+                
+                st.write("## Generated Goals")
+                st.write(f"\n {goals} \n")
+                
+                st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
+                st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
+            
         elif st.session_state.model == "gpt-3.5-turbo":
             
             insights, tokens_used, query_cost = atlas_analysis_chatGPT(api_key=open_api_key,
@@ -239,6 +225,22 @@ if len(survey_results) > 5:
 
             st.balloons()
             
+            if st.button("Suggest goals"):
+                st.spinner("Generating goals...")
+                
+                goals, tokens_used, query_cost = generate_goals(api_key=open_api_key,
+                                                                model=st.session_state.model,
+                                                                insights=insights)
+                
+                st.session_state.tokens_used += tokens_used
+                st.session_state.cost += query_cost
+                
+                st.write("## Generated Goals")
+                st.write(f"\n {goals} \n")
+                
+                st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
+                st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
+            
         elif st.session_state.model == "gpt-4":
             
             insights, tokens_used, query_cost = atlas_analysis_chatGPT(api_key=open_api_key,
@@ -258,6 +260,22 @@ if len(survey_results) > 5:
             st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
 
             st.balloons()            
+            
+            if st.button("Suggest goals"):
+                st.spinner("Generating goals...")
+                
+                goals, tokens_used, query_cost = generate_goals(api_key=open_api_key,
+                                                                model=st.session_state.model,
+                                                                insights=insights)
+                
+                st.session_state.tokens_used += tokens_used
+                st.session_state.cost += query_cost
+                
+                st.write("## Generated Goals")
+                st.write(f"\n {goals} \n")
+                
+                st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
+                st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
 
 else:
     st.warning("Please enter your responses to the questions.")
