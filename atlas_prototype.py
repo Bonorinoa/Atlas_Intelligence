@@ -189,21 +189,21 @@ if len(survey_results) > 5:
 
             st.balloons()
             
-            if st.button("Suggest goals"):
-                st.spinner("Generating goals...")
-                
-                goals, tokens_used, query_cost = generate_goals(api_key=open_api_key,
-                                                                model=st.session_state.model,
-                                                                insights=insights)
-                
-                st.session_state.tokens_used += tokens_used
-                st.session_state.cost += query_cost
-                
-                st.write("## Generated Goals")
-                st.write(f"\n {goals} \n")
-                
-                st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
-                st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
+            st.write("--------------------------------------------------------------")
+            st.spinner("Generating goals...")
+            
+            goals, tokens_used, query_cost = generate_goals(api_key=open_api_key,
+                                                            model=st.session_state.model,
+                                                            insights=insights)
+            
+            st.session_state.tokens_used += tokens_used
+            st.session_state.cost += query_cost
+            
+            st.write("## Generated Goals")
+            st.write(f"\n {goals} \n")
+            
+            st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
+            st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
             
         elif st.session_state.model == "gpt-3.5-turbo":
             
@@ -225,21 +225,21 @@ if len(survey_results) > 5:
 
             st.balloons()
             
-            if st.button("Suggest goals"):
-                st.spinner("Generating goals...")
-                
-                goals, tokens_used, query_cost = generate_goals(api_key=open_api_key,
-                                                                model=st.session_state.model,
-                                                                insights=insights)
-                
-                st.session_state.tokens_used += tokens_used
-                st.session_state.cost += query_cost
-                
-                st.write("## Generated Goals")
-                st.write(f"\n {goals} \n")
-                
-                st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
-                st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
+            st.write("--------------------------------------------------------------")
+            st.spinner("Generating goals...")
+            
+            goals, tokens_used, query_cost = generate_goals(api_key=open_api_key,
+                                                            model=st.session_state.model,
+                                                            insights=insights)
+            
+            st.session_state.tokens_used += tokens_used
+            st.session_state.cost += query_cost
+            
+            st.write("## Generated Goals")
+            st.write(f"\n {goals} \n")
+            
+            st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
+            st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
             
         elif st.session_state.model == "gpt-4":
             
