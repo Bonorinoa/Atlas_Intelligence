@@ -187,4 +187,60 @@ def generate_goals(api_key: str,
         query_cost = compute_cost(tokens_used, model)
     
     return (goals, tokens_used, query_cost)
+
+
+def generate_activities(api_key:str,
+                        model:str,
+                        insights:str,
+                        goals:str):
+    '''
+    Function to generate suggested activities given insights and goals generated
+    api_key: OpenAI API key
+    model: model to use for generation
+    insights: insights generated from the atlas_analysis_x function
+    goals: goals generated from the generate_goals function
+    '''
+
+    if not isinstance(api_key, str):
+        raise TypeError(f"Expected a string but got {type(api_key)}")
+    
+    if not api_key:
+        raise ValueError("Please provide an API key")
+    
+    openai.api_key = api_key    
+    
+    sys_prompt = "You are a well-being expert. Your task is to identify and recommend activities that will help the surveyed object improve his or her well-being given the survey insights report and goals suggested. \n"
+    
+    prompt = f"Given the following insights [{insights}] and suggested goals [{goals}], " \
+            + "provide two suggested activities, per goal, for the surveyed object that will maximize his/her net benefit for the effort required to improve along the dimensions that need the most improvement." \
+            + " Some potential activities you can suggest include, but are not limited to, relevant readings (books or articles), relevant educational material, and/or physical activities. Format the suggestions as a numbered list."
+    
+    
+    if model == "text-davinci-003":
+        try:
+            completion = openai.Completion.create(engine=model,
+                                            prompt=sys_prompt + prompt,
+                                            temperature=0.7,
+                                            max_tokens=500)
+            
+            activities = completion.choices[0].text
+            tokens_used = completion.usage.total_tokens
+            query_cost = compute_cost(tokens_used, model)
+            
+        except openai.error.OpenAIError as e:
+            raise ValueError(f"An error occurred while calling the OpenAI API: {e}")
+        
+    else:
+        completion = openai.ChatCompletion.create(model=model,
+                                                  messages=[{"role": "system", "content":sys_prompt}, 
+                                                            {"role": "user", "content":prompt}],
+                                                  temperature=0.7,
+                                                  max_tokens=500)
+        
+        activities = completion.choices[0].message.content
+        tokens_used = completion.usage.total_tokens
+        query_cost = compute_cost(tokens_used, model)
+    
+    return (activities, tokens_used, query_cost)
+    
 ## -- End of utility functions -- ##

@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from utils import atlas_analysis_davinci, atlas_analysis_chatGPT, generate_goals
+from utils import atlas_analysis_davinci, atlas_analysis_chatGPT, generate_goals, generate_activities
 
 # TODO: Move prototype's frontend to Javascript (Flask + React?).
 # TODO: Add more text mining and NLP features. (finish smart_surveys package and import it here)
@@ -205,6 +205,23 @@ if len(survey_results) > 5:
             st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
             st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
             
+            st.write("--------------------------------------------------------------")
+            st.spinner("Generating activity and resource suggestions...")
+            
+            activities, tokens_used, query_cost = generate_activities(api_key=open_api_key,
+                                                                      model=st.session_state.model,
+                                                                      insights=insights,
+                                                                      goals=goals)
+            
+            st.session_state.tokens_used += tokens_used
+            st.session_state.cost += query_cost
+            
+            st.write("## Generated Activities and Resources")
+            st.write(f"\n {activities} \n")
+            
+            
+            
+            
         elif st.session_state.model == "gpt-3.5-turbo":
             
             insights, tokens_used, query_cost = atlas_analysis_chatGPT(api_key=open_api_key,
@@ -276,6 +293,20 @@ if len(survey_results) > 5:
             
             st.info(f"Query Tokens: {tokens_used}. Total tokens used: {st.session_state.tokens_used}")
             st.info(f"Query Cost: {query_cost}. Total Session's Cost ${st.session_state.cost:.5f}")
+            
+            st.write("--------------------------------------------------------------")
+            st.spinner("Generating activity and resource suggestions...")
+            
+            activities, tokens_used, query_cost = generate_activities(api_key=open_api_key,
+                                                                      model=st.session_state.model,
+                                                                      insights=insights,
+                                                                      goals=goals)
+            
+            st.session_state.tokens_used += tokens_used
+            st.session_state.cost += query_cost
+            
+            st.write("## Generated Activities and Resources")
+            st.write(f"\n {activities} \n")
 
 else:
     st.warning("Please enter your responses to the questions.")
